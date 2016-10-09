@@ -7,8 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "PMainThreadWatcher.h"
 
 @interface ViewController ()
+@property (nonatomic, strong) NSTimer*                 busyJobTimer;
 
 @end
 
@@ -16,14 +18,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    [[PMainThreadWatcher sharedInstance] startWatch];
+    
+    self.busyJobTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(onBusyJobTimeout) userInfo:nil repeats:true];
 }
 
+- (void)onBusyJobTimeout
+{
+    [self doBusyJob];
+}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)doBusyJob
+{
+    int logCount = 10000;
+    for (int i = 0; i < logCount; i ++) {
+        NSLog(@"busy...\n");
+    }
 }
 
 
 @end
+
